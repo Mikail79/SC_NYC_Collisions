@@ -1,5 +1,5 @@
 # =============================================================================
-# SC_NYC_Collisions — FastAPI Backend
+# SC_NYC_Collisions — FastAPI Backend (v2)
 # =============================================================================
 import os
 import numpy as np
@@ -61,6 +61,7 @@ class PredictionRequest(BaseModel):
     borough: str = Field(...)
     vehicle_type: str = Field(...)
     contributing_factor: str = Field("")
+    contributing_factor_2: str = Field("", description="Secondary contributing factor (optional)")
 
 class PredictionResponse(BaseModel):
     predicted_class: int
@@ -96,14 +97,33 @@ async def predict(request: PredictionRequest):
         raise HTTPException(status_code=503, detail="Model not loaded.")
 
     try:
-        factor = request.contributing_factor.strip().upper() or "UNKNOWN"
+        factor1 = request.contributing_factor.strip().upper() or "UNKNOWN"
+        factor2 = request.contributing_factor_2.strip().upper() or "UNKNOWN"
+
+        # === Feature Engineering (v2) ===
+        is_weekend = 1 if request.day_of_week >= 5 else 0
+        is_night = 1 if (request.hour >= 21 or request.hour <= 5) else 0
+        is_rush_hour = 1 if ((7 <= request.hour <= 9) or (16 <= request.hour <= 19)) else 0
+        hour_sin = float(np.sin(2 * np.pi * request.hour / 24))
+        hour_cos = float(np.cos(2 * np.pi * request.hour / 24))
+        month_sin = float(np.sin(2 * np.pi * (request.month - 1) / 12))
+        month_cos = float(np.cos(2 * np.pi * (request.month - 1) / 12))
+
         input_df = pd.DataFrame([{
             "CRASH_HOUR": request.hour,
             "DAY_OF_WEEK": request.day_of_week,
             "MONTH": request.month,
+            "IS_WEEKEND": is_weekend,
+            "IS_NIGHT": is_night,
+            "IS_RUSH_HOUR": is_rush_hour,
+            "HOUR_SIN": hour_sin,
+            "HOUR_COS": hour_cos,
+            "MONTH_SIN": month_sin,
+            "MONTH_COS": month_cos,
             "BOROUGH": request.borough.strip().upper(),
             "VEHICLE_TYPE_CODE_1": request.vehicle_type.strip().upper(),
-            "CONTRIBUTING_FACTOR_VEHICLE_1": factor,
+            "CONTRIBUTING_FACTOR_VEHICLE_1": factor1,
+            "CONTRIBUTING_FACTOR_VEHICLE_2": factor2,
         }])
 
         feature_vector = preprocessor.transform(input_df)
@@ -122,9 +142,14 @@ async def predict(request: PredictionRequest):
                 for f in valid:
                     batch.append({
                         "CRASH_HOUR": request.hour, "DAY_OF_WEEK": request.day_of_week,
-                        "MONTH": request.month, "BOROUGH": request.borough.strip().upper(),
+                        "MONTH": request.month,
+                        "IS_WEEKEND": is_weekend, "IS_NIGHT": is_night, "IS_RUSH_HOUR": is_rush_hour,
+                        "HOUR_SIN": hour_sin, "HOUR_COS": hour_cos,
+                        "MONTH_SIN": month_sin, "MONTH_COS": month_cos,
+                        "BOROUGH": request.borough.strip().upper(),
                         "VEHICLE_TYPE_CODE_1": request.vehicle_type.strip().upper(),
                         "CONTRIBUTING_FACTOR_VEHICLE_1": f,
+                        "CONTRIBUTING_FACTOR_VEHICLE_2": factor2,
                     })
                     names.append(f)
                 batch_preds = model.predict(preprocessor.transform(pd.DataFrame(batch)), verbose=0)
@@ -163,7 +188,8 @@ async def predict(request: PredictionRequest):
                 "month": request.month,
                 "borough": request.borough,
                 "vehicle_type": request.vehicle_type,
-                "contributing_factor": factor,
+                "contributing_factor": factor1,
+                "contributing_factor_2": factor2,
             },
             risk_analysis=risk_analysis,
             vehicle_insight=vehicle_insight,

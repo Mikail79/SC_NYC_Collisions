@@ -7,11 +7,6 @@ const CLASS_LABELS = {
   1: 'Injury / Fatal',
 }
 
-const SEVERITY_ICONS = {
-  0: '✅',
-  1: '🚨',
-}
-
 const DEFAULT_BOROUGHS = [
   'BRONX',
   'BROOKLYN',
@@ -19,6 +14,72 @@ const DEFAULT_BOROUGHS = [
   'QUEENS',
   'STATEN ISLAND',
 ]
+
+/* ─── SVG Icon Components ─────────────────────────────────────────────────── */
+const IconCar = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/>
+    <circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/>
+  </svg>
+)
+
+const IconClipboard = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+    <path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/>
+  </svg>
+)
+
+const IconChart = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/>
+  </svg>
+)
+
+const IconSearch = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+  </svg>
+)
+
+const IconShield = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>
+    <path d="m9 12 2 2 4-4"/>
+  </svg>
+)
+
+const IconAlertTriangle = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+    <path d="M12 9v4"/><path d="M12 17h.01"/>
+  </svg>
+)
+
+const IconAlertCircle = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/>
+  </svg>
+)
+
+const IconInfo = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>
+  </svg>
+)
+
+const IconBarChart = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="12" x2="12" y1="20" y2="10"/><line x1="18" x2="18" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="16"/>
+  </svg>
+)
+
+const IconTarget = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
+  </svg>
+)
+
 
 function App() {
   // ─── Form State ────────────────────────────────────────────────────────
@@ -29,6 +90,7 @@ function App() {
     borough: '',
     vehicle_type: '',
     contributing_factor: '',
+    contributing_factor_2: '',
   })
 
   // ─── Dropdown Options ──────────────────────────────────────────────────
@@ -42,18 +104,14 @@ function App() {
   const [result, setResult] = useState(null)
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
-  const [apiStatus, setApiStatus] = useState('checking') // 'online' | 'offline' | 'checking'
+  const [apiStatus, setApiStatus] = useState('checking')
 
-  // ─── Fetch Categories & Check API Status ───────────────────────────────
+  // ─── Fetch Categories & Check API ──────────────────────────────────────
   useEffect(() => {
     const checkApi = async () => {
       try {
         const res = await fetch(`${API_BASE}/health`)
-        if (res.ok) {
-          setApiStatus('online')
-        } else {
-          setApiStatus('offline')
-        }
+        setApiStatus(res.ok ? 'online' : 'offline')
       } catch {
         setApiStatus('offline')
       }
@@ -71,14 +129,12 @@ function App() {
           })
         }
       } catch {
-        // Silently fail — use defaults
+        // Silently fail
       }
     }
 
     checkApi()
     fetchCategories()
-
-    // Re-check API status every 30 seconds
     const interval = setInterval(checkApi, 30000)
     return () => clearInterval(interval)
   }, [])
@@ -88,7 +144,7 @@ function App() {
     const { name, value } = e.target
     setFormData((prev) => ({
       ...prev,
-      [name]: ['hour','day_of_week','month'].includes(name) ? parseInt(value, 10) || 0 : value,
+      [name]: ['hour', 'day_of_week', 'month'].includes(name) ? parseInt(value, 10) || 0 : value,
     }))
   }, [])
 
@@ -98,7 +154,6 @@ function App() {
     setError(null)
     setLoading(true)
 
-    // Validation
     if (!formData.borough) {
       setError('Please select a borough.')
       setLoading(false)
@@ -150,13 +205,15 @@ function App() {
       <header className="app-header">
         <div className="header-inner">
           <div className="header-brand">
-            <div className="header-icon">🚗</div>
+            <div className="header-logo">
+              <IconCar />
+            </div>
             <div className="header-text">
               <h1>NYC Collision Severity Predictor</h1>
-              <p>Motor Vehicle Collision Analysis — ANN/MLP Model</p>
+              <p>Predictive Modeling of Traffic Collision Severity</p>
             </div>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div className="header-right">
             <div className="connection-status">
               <span className={`status-dot ${apiStatus}`}></span>
               <span>
@@ -170,166 +227,179 @@ function App() {
 
       {/* ── Main Content ─────────────────────────────────────────────── */}
       <main className="app-main">
-        {/* ── Input Form Card ────────────────────────────────────────── */}
-        <div className="card">
-          <div className="card-header">
-            <div className="card-header-icon">📋</div>
-            <div>
-              <h2>Collision Parameters</h2>
-              <p>Enter crash scenario details for prediction</p>
+        {/* ── Left Panel: About + Form ────────────────────────────────── */}
+        <div>
+          {/* About Section */}
+          <div className="about-section">
+            <div className="about-title">
+              <IconInfo />
+              Tentang Aplikasi Ini
+            </div>
+            <p className="about-text">
+              <strong>Sistem Pendukung Keputusan (Decision Support System)</strong> untuk memprediksi tingkat
+              keparahan kecelakaan lalu lintas di New York City. Menggunakan model <strong>Artificial Neural Network
+              (Multilayer Perceptron)</strong> yang dilatih dari 50.000 data historis kecelakaan nyata dari NYC Open Data API.
+            </p>
+            <p className="about-text">
+              Aplikasi ini menganalisis faktor waktu, lokasi, jenis kendaraan, dan penyebab kecelakaan untuk
+              menghasilkan prediksi apakah suatu skenario kecelakaan berpotensi menyebabkan cedera/kematian
+              atau hanya kerusakan properti.
+            </p>
+            <div className="about-tags">
+              <span className="about-tag">Keselamatan Lalu Lintas</span>
+              <span className="about-tag">Perencana Kota</span>
+              <span className="about-tag">Asuransi Kendaraan</span>
+              <span className="about-tag">Peneliti Transportasi</span>
+              <span className="about-tag">Akademisi</span>
             </div>
           </div>
-          <div className="card-body">
-            <form onSubmit={handleSubmit} id="prediction-form">
-              {/* Hour */}
-              <div className="form-group">
-                <label className="form-label" htmlFor="hour">
-                  Crash Hour
-                  <span className="form-label-hint">(0–23)</span>
-                </label>
-                <div className="hour-input-wrapper">
-                  <input
-                    type="number"
-                    id="hour"
-                    name="hour"
-                    className="form-input"
-                    value={formData.hour}
-                    onChange={handleChange}
-                    min={0}
-                    max={23}
-                    placeholder="e.g., 14"
-                  />
-                  <span className="hour-suffix">{formatHour(formData.hour)}</span>
+
+          {/* Input Form Card */}
+          <div className="card">
+            <div className="card-header">
+              <div className="card-icon">
+                <IconClipboard />
+              </div>
+              <div>
+                <h2>Collision Parameters</h2>
+                <p>Enter crash scenario details for prediction</p>
+              </div>
+            </div>
+            <div className="card-body">
+              <form onSubmit={handleSubmit} id="prediction-form">
+                <div className="form-grid">
+                  {/* Hour */}
+                  <div className="form-group">
+                    <label className="form-label" htmlFor="hour">
+                      Crash Hour
+                      <span className="form-hint">(0-23)</span>
+                    </label>
+                    <div className="hour-input-wrapper">
+                      <input
+                        type="number"
+                        id="hour"
+                        name="hour"
+                        className="form-input"
+                        value={formData.hour}
+                        onChange={handleChange}
+                        min={0}
+                        max={23}
+                        placeholder="e.g., 14"
+                      />
+                      <span className="hour-suffix">{formatHour(formData.hour)}</span>
+                    </div>
+                  </div>
+
+                  {/* Day of Week */}
+                  <div className="form-group">
+                    <label className="form-label" htmlFor="day_of_week">Day of Week</label>
+                    <select id="day_of_week" name="day_of_week" className="form-select" value={formData.day_of_week} onChange={handleChange}>
+                      {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((d, i) => (
+                        <option key={i} value={i}>{d}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Month */}
+                  <div className="form-group">
+                    <label className="form-label" htmlFor="month">Month</label>
+                    <select id="month" name="month" className="form-select" value={formData.month} onChange={handleChange}>
+                      {['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'].map((m, i) => (
+                        <option key={i + 1} value={i + 1}>{m}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Borough */}
+                  <div className="form-group">
+                    <label className="form-label" htmlFor="borough">Borough</label>
+                    <select id="borough" name="borough" className="form-select" value={formData.borough} onChange={handleChange}>
+                      <option value="">— Select Borough —</option>
+                      {categories.boroughs.map((b) => (
+                        <option key={b} value={b}>{b}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Vehicle Type */}
+                  <div className="form-group full-width">
+                    <label className="form-label" htmlFor="vehicle_type">Vehicle Type</label>
+                    {categories.vehicle_types.length > 0 ? (
+                      <select id="vehicle_type" name="vehicle_type" className="form-select" value={formData.vehicle_type} onChange={handleChange}>
+                        <option value="">— Select Vehicle Type —</option>
+                        {categories.vehicle_types.map((v) => (
+                          <option key={v} value={v}>{v}</option>
+                        ))}
+                      </select>
+                    ) : (
+                      <input type="text" id="vehicle_type" name="vehicle_type" className="form-input" value={formData.vehicle_type} onChange={handleChange} placeholder="e.g., SEDAN, SUV, TAXI" />
+                    )}
+                  </div>
+
+                  {/* Contributing Factor 1 */}
+                  <div className="form-group full-width">
+                    <label className="form-label" htmlFor="contributing_factor">Contributing Factor (Primary)</label>
+                    {categories.contributing_factors.length > 0 ? (
+                      <select id="contributing_factor" name="contributing_factor" className="form-select" value={formData.contributing_factor} onChange={handleChange}>
+                        <option value="">— Select Contributing Factor —</option>
+                        {categories.contributing_factors.map((f) => (
+                          <option key={f} value={f}>{f}</option>
+                        ))}
+                      </select>
+                    ) : (
+                      <input type="text" id="contributing_factor" name="contributing_factor" className="form-input" value={formData.contributing_factor} onChange={handleChange} placeholder="e.g., DRIVER INATTENTION/DISTRACTION" />
+                    )}
+                  </div>
+
+                  {/* Contributing Factor 2 (NEW) */}
+                  <div className="form-group full-width">
+                    <label className="form-label" htmlFor="contributing_factor_2">
+                      Contributing Factor (Secondary)
+                      <span className="form-optional-tag">Optional</span>
+                    </label>
+                    {categories.contributing_factors.length > 0 ? (
+                      <select id="contributing_factor_2" name="contributing_factor_2" className="form-select" value={formData.contributing_factor_2} onChange={handleChange}>
+                        <option value="">— None / Unknown —</option>
+                        {categories.contributing_factors.map((f) => (
+                          <option key={f} value={f}>{f}</option>
+                        ))}
+                      </select>
+                    ) : (
+                      <input type="text" id="contributing_factor_2" name="contributing_factor_2" className="form-input" value={formData.contributing_factor_2} onChange={handleChange} placeholder="Optional secondary factor" />
+                    )}
+                  </div>
                 </div>
-              </div>
 
-              {/* Day of Week */}
-              <div className="form-group">
-                <label className="form-label" htmlFor="day_of_week">Day of Week</label>
-                <select id="day_of_week" name="day_of_week" className="form-select" value={formData.day_of_week} onChange={handleChange}>
-                  {['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'].map((d, i) => (
-                    <option key={i} value={i}>{d}</option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Month */}
-              <div className="form-group">
-                <label className="form-label" htmlFor="month">Month</label>
-                <select id="month" name="month" className="form-select" value={formData.month} onChange={handleChange}>
-                  {['January','February','March','April','May','June','July','August','September','October','November','December'].map((m, i) => (
-                    <option key={i+1} value={i+1}>{m}</option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Borough */}
-              <div className="form-group">
-                <label className="form-label" htmlFor="borough">
-                  Borough
-                </label>
-                <select
-                  id="borough"
-                  name="borough"
-                  className="form-select"
-                  value={formData.borough}
-                  onChange={handleChange}
+                {/* Submit Button */}
+                <button
+                  type="submit"
+                  className="btn-predict"
+                  disabled={loading || apiStatus === 'offline'}
+                  id="predict-button"
                 >
-                  <option value="">— Select Borough —</option>
-                  {categories.boroughs.map((b) => (
-                    <option key={b} value={b}>{b}</option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Vehicle Type */}
-              <div className="form-group">
-                <label className="form-label" htmlFor="vehicle_type">
-                  Vehicle Type
-                </label>
-                {categories.vehicle_types.length > 0 ? (
-                  <select
-                    id="vehicle_type"
-                    name="vehicle_type"
-                    className="form-select"
-                    value={formData.vehicle_type}
-                    onChange={handleChange}
-                  >
-                    <option value="">— Select Vehicle Type —</option>
-                    {categories.vehicle_types.map((v) => (
-                      <option key={v} value={v}>{v}</option>
-                    ))}
-                  </select>
-                ) : (
-                  <input
-                    type="text"
-                    id="vehicle_type"
-                    name="vehicle_type"
-                    className="form-input"
-                    value={formData.vehicle_type}
-                    onChange={handleChange}
-                    placeholder="e.g., SEDAN, SUV, TAXI"
-                  />
-                )}
-              </div>
-
-              {/* Contributing Factor */}
-              <div className="form-group">
-                <label className="form-label" htmlFor="contributing_factor">
-                  Contributing Factor
-                </label>
-                {categories.contributing_factors.length > 0 ? (
-                  <select
-                    id="contributing_factor"
-                    name="contributing_factor"
-                    className="form-select"
-                    value={formData.contributing_factor}
-                    onChange={handleChange}
-                  >
-                    <option value="">— Select Contributing Factor —</option>
-                    {categories.contributing_factors.map((f) => (
-                      <option key={f} value={f}>{f}</option>
-                    ))}
-                  </select>
-                ) : (
-                  <input
-                    type="text"
-                    id="contributing_factor"
-                    name="contributing_factor"
-                    className="form-input"
-                    value={formData.contributing_factor}
-                    onChange={handleChange}
-                    placeholder="e.g., DRIVER INATTENTION/DISTRACTION"
-                  />
-                )}
-              </div>
-
-              {/* Submit */}
-              <button
-                type="submit"
-                className="btn-predict"
-                disabled={loading || apiStatus === 'offline'}
-                id="predict-button"
-              >
-                {loading ? (
-                  <>
-                    <span className="spinner"></span>
-                    Analyzing...
-                  </>
-                ) : (
-                  <>
-                    🔍 Predict Severity
-                  </>
-                )}
-              </button>
-            </form>
+                  {loading ? (
+                    <>
+                      <span className="spinner"></span>
+                      Analyzing...
+                    </>
+                  ) : (
+                    <>
+                      <IconSearch />
+                      Predict Severity
+                    </>
+                  )}
+                </button>
+              </form>
+            </div>
           </div>
         </div>
 
-        {/* ── Results Card ───────────────────────────────────────────── */}
+        {/* ── Right Panel: Results ────────────────────────────────────── */}
         <div className="card result-card">
           <div className="card-header">
-            <div className="card-header-icon">📊</div>
+            <div className="card-icon">
+              <IconChart />
+            </div>
             <div>
               <h2>Prediction Result</h2>
               <p>Model output and probability distribution</p>
@@ -338,13 +408,13 @@ function App() {
 
           {/* Error Banner */}
           {error && (
-            <div style={{ padding: '0 24px' }}>
-              <div className="error-banner">
-                <span className="error-banner-icon">⚠️</span>
-                <div className="error-banner-text">
-                  <strong>Prediction Error</strong>
-                  {error}
-                </div>
+            <div className="error-banner">
+              <div className="error-banner-icon">
+                <IconAlertCircle />
+              </div>
+              <div className="error-banner-text">
+                <strong>Prediction Error</strong>
+                {error}
               </div>
             </div>
           )}
@@ -352,11 +422,13 @@ function App() {
           {/* No result yet */}
           {!result && !error && (
             <div className="result-placeholder">
-              <div className="result-placeholder-icon">🔮</div>
+              <div className="result-placeholder-icon">
+                <IconTarget />
+              </div>
               <h3>No Prediction Yet</h3>
               <p>
                 Fill in the collision parameters on the left and click
-                "Predict Severity" to see the model output.
+                &ldquo;Predict Severity&rdquo; to see the model output.
               </p>
             </div>
           )}
@@ -367,7 +439,7 @@ function App() {
               {/* Severity Badge */}
               <div className={`result-severity severity-${result.predicted_class}`}>
                 <div className="severity-icon">
-                  {SEVERITY_ICONS[result.predicted_class] || '❓'}
+                  {result.predicted_class === 0 ? <IconShield /> : <IconAlertTriangle />}
                 </div>
                 <div className="severity-class">
                   Class {result.predicted_class}
@@ -379,8 +451,7 @@ function App() {
 
               {/* Probability Distribution */}
               <div className="prob-section">
-                <h4>Probability Distribution</h4>
-
+                <h4 className="section-title">Probability Distribution</h4>
                 {Object.entries(result.probabilities).map(([label, value], idx) => {
                   const barClass = idx === 0 ? 'bar-safe' : 'bar-fatal'
                   const textClass = idx === 0 ? 'text-safe' : 'text-fatal'
@@ -391,10 +462,7 @@ function App() {
                         <span className={`prob-value ${textClass}`}>{value}%</span>
                       </div>
                       <div className="prob-bar-track">
-                        <div
-                          className={`prob-bar-fill ${barClass}`}
-                          style={{ width: `${value}%` }}
-                        ></div>
+                        <div className={`prob-bar-fill ${barClass}`} style={{ width: `${value}%` }}></div>
                       </div>
                     </div>
                   )
@@ -404,7 +472,7 @@ function App() {
               {/* Input Summary */}
               {result.input_received && (
                 <div className="input-summary">
-                  <h4>Input Summary</h4>
+                  <h4 className="section-title">Input Summary</h4>
                   <div className="input-summary-grid">
                     <div className="input-summary-item">
                       <span className="label">Hour</span>
@@ -436,20 +504,21 @@ function App() {
                 </div>
               )}
 
-              {/* Risk Analysis (Top Dangerous Factors) */}
+              {/* Risk Analysis */}
               {result.risk_analysis && result.risk_analysis.length > 0 && (
-                <div className="risk-analysis-section" style={{ marginTop: '24px', padding: '16px', backgroundColor: '#fff3cd', borderRadius: '8px', borderLeft: '4px solid #ffc107' }}>
-                  <h4 style={{ color: '#856404', marginBottom: '12px', marginTop: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span style={{ fontSize: '1.2em' }}>⚠️</span> Top Dangerous Factors to Avoid
-                  </h4>
-                  <p style={{ color: '#856404', fontSize: '0.85rem', marginBottom: '12px' }}>
-                    Based on your scenario, here are the factors most likely to cause injury or fatality:
+                <div className="risk-section">
+                  <div className="risk-header">
+                    <IconAlertTriangle />
+                    <h4>Top Dangerous Factors to Avoid</h4>
+                  </div>
+                  <p className="risk-desc">
+                    Based on your scenario, these factors are most likely to cause injury or fatality:
                   </p>
-                  <ul style={{ listStyleType: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <ul className="risk-list">
                     {result.risk_analysis.map((risk, idx) => (
-                      <li key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'rgba(255, 193, 7, 0.2)', padding: '8px 12px', borderRadius: '4px' }}>
-                        <span style={{ fontWeight: 600, color: '#664d03', fontSize: '0.9rem' }}>{idx + 1}. {risk.factor}</span>
-                        <span style={{ color: '#dc3545', fontWeight: 'bold', fontSize: '0.9rem' }}>{risk.danger_score}% Risk</span>
+                      <li key={idx} className="risk-item">
+                        <span className="risk-item-name">{idx + 1}. {risk.factor}</span>
+                        <span className="risk-item-score">{risk.danger_score}%</span>
                       </li>
                     ))}
                   </ul>
@@ -458,26 +527,27 @@ function App() {
 
               {/* Vehicle Insight */}
               {result.vehicle_insight && result.vehicle_insight.avg_vehicles_in_injury > 0 && (
-                <div style={{ marginTop: '24px', padding: '16px', backgroundColor: '#d1ecf1', borderRadius: '8px', borderLeft: '4px solid #0dcaf0' }}>
-                  <h4 style={{ color: '#0c5460', marginBottom: '12px', marginTop: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span style={{ fontSize: '1.2em' }}>🚗</span> Vehicle Involvement Insight ({result.input_received.borough})
-                  </h4>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-                    <div style={{ background: 'rgba(0,0,0,0.05)', padding: '8px 12px', borderRadius: '4px' }}>
-                      <div style={{ fontSize: '0.75rem', color: '#0c5460' }}>Avg vehicles in injury cases</div>
-                      <div style={{ fontSize: '1.3rem', fontWeight: 'bold', color: '#dc3545' }}>{result.vehicle_insight.avg_vehicles_in_injury}</div>
+                <div className="insight-section">
+                  <div className="insight-header">
+                    <IconBarChart />
+                    <h4>Vehicle Involvement Insight — {result.input_received.borough}</h4>
+                  </div>
+                  <div className="insight-grid">
+                    <div className="insight-stat">
+                      <div className="insight-stat-label">Avg vehicles in injury cases</div>
+                      <div className="insight-stat-value danger">{result.vehicle_insight.avg_vehicles_in_injury}</div>
                     </div>
-                    <div style={{ background: 'rgba(0,0,0,0.05)', padding: '8px 12px', borderRadius: '4px' }}>
-                      <div style={{ fontSize: '0.75rem', color: '#0c5460' }}>Avg vehicles in safe cases</div>
-                      <div style={{ fontSize: '1.3rem', fontWeight: 'bold', color: '#28a745' }}>{result.vehicle_insight.avg_vehicles_in_safe}</div>
+                    <div className="insight-stat">
+                      <div className="insight-stat-label">Avg vehicles in safe cases</div>
+                      <div className="insight-stat-value safe">{result.vehicle_insight.avg_vehicles_in_safe}</div>
                     </div>
-                    <div style={{ background: 'rgba(0,0,0,0.05)', padding: '8px 12px', borderRadius: '4px' }}>
-                      <div style={{ fontSize: '0.75rem', color: '#0c5460' }}>Max vehicles in injury</div>
-                      <div style={{ fontSize: '1.3rem', fontWeight: 'bold', color: '#856404' }}>{result.vehicle_insight.max_vehicles_in_injury}</div>
+                    <div className="insight-stat">
+                      <div className="insight-stat-label">Max vehicles in injury</div>
+                      <div className="insight-stat-value warn">{result.vehicle_insight.max_vehicles_in_injury}</div>
                     </div>
-                    <div style={{ background: 'rgba(0,0,0,0.05)', padding: '8px 12px', borderRadius: '4px' }}>
-                      <div style={{ fontSize: '0.75rem', color: '#0c5460' }}>Injury vs Safe ratio</div>
-                      <div style={{ fontSize: '1.3rem', fontWeight: 'bold', color: '#0c5460' }}>{result.vehicle_insight.total_injury_cases} / {result.vehicle_insight.total_safe_cases}</div>
+                    <div className="insight-stat">
+                      <div className="insight-stat-label">Injury vs Safe ratio</div>
+                      <div className="insight-stat-value info">{result.vehicle_insight.total_injury_cases} / {result.vehicle_insight.total_safe_cases}</div>
                     </div>
                   </div>
                 </div>
